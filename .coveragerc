@@ -1,0 +1,6 @@
+[run]
+branch = True
+source = monasca_sidecar
+
+[report]
+ignore_errors = True
