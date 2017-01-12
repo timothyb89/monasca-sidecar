@@ -59,6 +59,33 @@ To view the published Prometheus metrics, run:
 
     http get http://localhost:4888/metrics
 
+Aggregation
+-----------
+
+Simple metric aggregation across an :code:`_id` label can be performed. To do
+so, add an extra :code:`_aggregate` label with a value of the desired
+aggregation function, such as :code:`sum`, :code:`mean`, :code:`min`, or
+:code:`max`. Then, when requesting the :code:`/metrics` endpoint, metrics with
+identical labels (excluding :code:`_id` and :code:`_aggregate`) will be
+combined.
+
+Metric Decay
+------------
+
+By default, submitted metrics decay after 60 seconds if they are no longer
+updated. In other words, if a particular combination of (metric name + labels)
+is not updated for 60 seconds, it will be removed from the reported metric list
+and will no affect any aggregations. This is intended to allow subprocesses to
+start and stop (intentionally or otherwise) without needing to inform the
+sidecar server about their lifecycles directly.
+
+Note that subprocesses should carefully select values for their :code:`_id`
+labels to make best use of this feature - a UUID4 is recommended for best
+results, though in some cases a PID can work fine.
+
+This value can be configured by changing the :code:`DECAY_SECONDS` environment
+variable before starting the sidecar server.
+
 Docker and Kubernetes
 ---------------------
 
